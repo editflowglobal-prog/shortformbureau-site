@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortform Bureau</title>
+<meta name="description" content="Shortform Bureau turns long-form podcasts and founder-led shows into hook-first vertical clips for Shorts, Reels, TikTok and LinkedIn. $500 pilot: 12 clips in 10 business days.">
+<meta property="og:title" content="Shortform Bureau">
+<meta property="og:description" content="Hook-first vertical clips from your podcast or founder-led show. $500 pilot: 12 clips, 10 business days.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: an editor's timeline. Long episode on top, orange in/out marks, cut down into vertical frames. */
+  --paper: #F4F2EE;
+  --ink: #141414;
+  --ink-soft: #55524D;
+  --rule: #D9D5CE;
+  --signal: #FF5A1F;
+  --signal-deep: #C8400F;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --gutter: clamp(16px, 4vw, 48px);
+  --max: 1120px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.55;
+}
+a { color: inherit; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+.mono { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.02em; }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  margin: 0;
+}
+h2 { font-size: clamp(32px, 5vw, 56px); font-stretch: 75%; text-transform: uppercase; }
+h3 { font-size: 22px; font-stretch: 100%; font-weight: 700; line-height: 1.15; }
+p { margin: 0; max-width: 62ch; }
+
+/* Nav */
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 20px 0; border-bottom: 1px solid var(--ink);
+}
+.wordmark {
+  font-family: var(--font-display); font-weight: 900; font-stretch: 62%;
+  font-size: 26px; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.wordmark i { width: 10px; height: 22px; background: var(--signal); display: inline-block; }
+.nav-links { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.nav-links a { text-decoration: none; font-size: 15px; }
+.nav-links a:hover { color: var(--signal-deep); }
+.btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-body); font-weight: 600; font-size: 16px;
+  padding: 14px 20px; border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper);
+  text-decoration: none; cursor: pointer; transition: background .15s, color .15s, border-color .15s;
+}
+.btn:hover { background: var(--signal); border-color: var(--signal); color: var(--ink); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.small { padding: 9px 14px; font-size: 14px; }
+
+/* Hero */
+.hero { padding: clamp(48px, 8vw, 96px) 0 40px; }
+.hero h1 {
+  font-size: clamp(52px, 10.5vw, 136px);
+  font-stretch: 62%;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 0.88;
+}
+.hero h1 em { font-style: normal; color: var(--signal); }
+.hero-sub { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; margin-top: 32px; }
+.hero-sub p { font-size: 21px; color: var(--ink); }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Timeline signature */
+.timeline { margin-top: 56px; border-top: 1px solid var(--ink); padding-top: 20px; }
+.tl-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-soft); }
+.tl-track {
+  position: relative; height: 56px; margin: 14px 0 8px;
+  background: repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px 12px), #ECE9E3;
+  border: 1px solid var(--ink);
+}
+.tl-cut {
+  position: absolute; top: -1px; bottom: -1px; background: var(--signal);
+  border-left: 2px solid var(--ink); border-right: 2px solid var(--ink);
+  transform-origin: left center; animation: mark 900ms cubic-bezier(.2,.7,.2,1) both;
+}
+.tl-cut:nth-child(2) { animation-delay: 120ms; }
+.tl-cut:nth-child(3) { animation-delay: 240ms; }
+@keyframes mark { from { transform: scaleX(0.15); opacity: .35; } to { transform: scaleX(1); opacity: 1; } }
+.tl-scale { display: flex; justify-content: space-between; color: var(--ink-soft); }
+.frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 2.5vw, 28px); margin-top: 28px; }
+.frame {
+  aspect-ratio: 9 / 16; max-height: 420px; width: 100%;
+  background: var(--ink); color: var(--paper); position: relative;
+  display: flex; flex-direction: column; justify-content: space-between; padding: 14px;
+  overflow: hidden;
+}
+.frame .tc { color: var(--signal); }
+.frame .hook {
+  font-family: var(--font-display); font-weight: 800; font-stretch: 75%; text-transform: uppercase;
+  font-size: clamp(18px, 2.4vw, 28px); line-height: 1.0;
+}
+.frame .cap {
+  align-self: flex-start; background: var(--paper); color: var(--ink);
+  font-weight: 600; font-size: clamp(12px, 1.4vw, 15px); padding: 4px 8px; line-height: 1.3;
+}
+.frame .cap b { background: var(--signal); padding: 0 3px; font-weight: 600; }
+.frame-note { margin-top: 10px; color: var(--ink-soft); }
+
+/* Sections */
+section { padding: clamp(56px, 8vw, 104px) 0; border-top: 1px solid var(--ink); }
+.sec-head { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; align-items: start; margin-bottom: 40px; }
+.sec-head .mono { color: var(--ink-soft); padding-top: 10px; }
+.lede { font-size: 21px; }
+.two { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 24px; }
+.stack { display: grid; gap: 20px; }
+
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.step { padding: 20px 20px 4px 0; border-right: 1px solid var(--rule); display: grid; gap: 10px; align-content: start; }
+.step:last-child { border-right: 0; }
+.step + .step { padding-left: 20px; }
+.step .day { color: var(--signal-deep); }
+.step p { font-size: 16px; color: var(--ink-soft); }
+
+.demo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.demo {
+  border: 1px solid var(--ink); display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 20px; padding: 20px;
+  background: #FAF9F6;
+}
+.demo .slot {
+  aspect-ratio: 9 / 16; background: repeating-linear-gradient(135deg, #E4E0D9 0 8px, #ECE9E3 8px 16px);
+  border: 1px dashed var(--ink-soft); display: flex; align-items: center; justify-content: center; text-align: center;
+  color: var(--ink-soft); padding: 8px;
+}
+.demo dl { margin: 12px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: 15px; }
+.demo dt { color: var(--ink-soft); }
+.demo dd { margin: 0; }
+.status { display: inline-block; margin-top: 4px; padding: 3px 8px; border: 1px solid var(--signal-deep); color: var(--signal-deep); }
+
+.pricing { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.plan { border: 1px solid var(--ink); padding: 28px; display: grid; gap: 16px; align-content: start; background: #FAF9F6; }
+.plan.lead { background: var(--ink); color: var(--paper); }
+.plan.lead .mono, .plan.lead li::marker { color: var(--signal); }
+.price { display: flex; flex-wrap: wrap; align-items: baseline; font-family: var(--font-display); font-weight: 900; font-stretch: 62%; font-size: 72px; line-height: 1; font-variant-numeric: tabular-nums; }
+.price small { white-space: nowrap; font-size: 22px; font-stretch: 100%; font-weight: 600; margin-left: 6px; }
+.plan ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 16px; }
+.plan .btn { justify-self: start; }
+.plan.lead .btn { background: var(--signal); border-color: var(--signal); color: var(--ink); }
+.plan.lead .btn:hover { background: var(--paper); border-color: var(--paper); }
+.aside { margin-top: 24px; display: flex; gap: 32px; flex-wrap: wrap; color: var(--ink-soft); font-size: 16px; }
+.aside strong { color: var(--ink); }
+
+.fit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.fit ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+
+details { border-top: 1px solid var(--rule); padding: 18px 0; }
+details:last-of-type { border-bottom: 1px solid var(--rule); }
+summary { cursor: pointer; font-weight: 600; font-size: 19px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--font-mono); color: var(--signal-deep); }
+details[open] summary::after { content: "–"; }
+details p { margin-top: 10px; color: var(--ink-soft); }
+
+.contact { background: var(--ink); color: var(--paper); border-top: 0; }
+.contact h2 { color: var(--paper); }
+.contact .mono { color: #A9A49C; }
+.contact-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.email-line { font-family: var(--font-display); font-weight: 800; font-stretch: 75%; font-size: clamp(26px, 4vw, 44px); word-break: break-all; }
+.email-line a { text-decoration: none; border-bottom: 3px solid var(--signal); }
+form { display: grid; gap: 14px; }
+label { display: grid; gap: 6px; font-size: 14px; color: #CFCAC2; }
+input, textarea {
+  font: inherit; font-size: 16px; padding: 12px; background: #1F1F1F; color: var(--paper);
+  border: 1px solid #3A3A3A;
+}
+input:focus, textarea:focus { outline: 2px solid var(--signal); outline-offset: 0; border-color: var(--signal); }
+.form-note { font-size: 14px; color: #A9A49C; }
+.form-out { font-size: 15px; color: var(--paper); min-height: 1.4em; }
+.contact .btn { background: var(--signal); border-color: var(--signal); color: var(--ink); justify-self: start; }
+.contact .btn:hover { background: var(--paper); border-color: var(--paper); }
+
+footer { padding: 28px 0; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-soft); font-size: 14px; }
+
+@media (max-width: 860px) {
+  .hero-sub, .sec-head, .two, .contact-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .step:nth-child(2) { border-right: 0; }
+  .step:nth-child(3) { padding-left: 0; }
+  .demo-grid, .pricing, .fit { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  body { font-size: 17px; }
+  .nav-links a:not(.btn) { display: none; }
+  .nav .btn.small { white-space: nowrap; }
+  .wordmark { font-size: 20px; white-space: nowrap; gap: 8px; }
+  .wordmark i { height: 18px; width: 8px; }
+  .steps { grid-template-columns: 1fr; }
+  .step { border-right: 0; padding-left: 0 !important; border-bottom: 1px solid var(--rule); }
+  .frames { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .frame { padding: 8px; }
+  .frame .cap { display: none; }
+  .demo { grid-template-columns: 96px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-cut { animation: none; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="wordmark" href="#top" aria-label="Shortform Bureau, home"><i aria-hidden="true"></i>Shortform Bureau</a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#demo">Demo</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn small" href="#contact">Get in touch</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <h1>Your best <em>60 seconds</em> are buried at minute 37.</h1>
+    <div class="hero-sub">
+      <p>Shortform Bureau turns long-form podcasts and founder-led shows into hook-first vertical clips for Shorts, Reels, TikTok and LinkedIn. A human picks every moment.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#pricing">See the $500 pilot</a>
+        <a class="btn ghost" href="#contact">Email us</a>
+      </div>
+    </div>
+
+    <div class="timeline" aria-label="Illustration: three moments marked on a 60-minute episode and cut into vertical clips">
+      <div class="tl-head mono"><span>EPISODE 112 · 01:02:40 · ILLUSTRATION</span><span>3 MOMENTS MARKED · IN / OUT</span></div>
+      <div class="tl-track">
+        <span class="tl-cut" style="left: 6%; width: 3.2%;"></span>
+        <span class="tl-cut" style="left: 37%; width: 2.4%;"></span>
+        <span class="tl-cut" style="left: 71%; width: 4%;"></span>
+      </div>
+      <div class="tl-scale mono" aria-hidden="true"><span>00:00</span><span>15:00</span><span>30:00</span><span>45:00</span><span>01:02:40</span></div>
+
+      <div class="frames">
+        <div class="frame">
+          <span class="mono tc">IN 03:46 · OUT 04:28</span>
+          <span class="hook">Zero ad spend. One rule.</span>
+          <span class="cap">no budget, <b>no ads</b>, just one rule</span>
+        </div>
+        <div class="frame">
+          <span class="mono tc">IN 23:12 · OUT 23:43</span>
+          <span class="hook">The number nobody checked.</span>
+          <span class="cap">it was <b>below the line</b></span>
+        </div>
+        <div class="frame">
+          <span class="mono tc">IN 44:31 · OUT 45:39</span>
+          <span class="hook">Seven emails. No reply. Then…</span>
+          <span class="cap">so I sent the <b>eighth</b></span>
+        </div>
+      </div>
+      <p class="frame-note mono">Illustrative layout. Not client footage.</p>
+    </div>
+  </header>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">01 · THE PROBLEM</span><h2>Great episodes. No second life.</h2></div>
+    <div class="two">
+      <span></span>
+      <div class="stack">
+        <p class="lede">You publish long, valuable conversations. Most people will never press play on 60 minutes, and short-form is where they'll meet you first.</p>
+        <p>Cutting clips that land takes real time: finding the moment that stands on its own, opening on the hook instead of the setup, captioning it cleanly. Auto-clipping tools find loud moments. They don't find the ones that make your show look smart.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">02 · HOW IT WORKS</span><h2>Two episodes in. Twelve clips out.</h2></div>
+    <div class="steps">
+      <div class="step"><span class="mono day">DAY 0</span><h3>Send two episodes</h3><p>YouTube links or raw files, plus your logo, fonts and colors.</p></div>
+      <div class="step"><span class="mono day">DAY 2</span><h3>Approve the moment list</h3><p>12 timestamps, each with a proposed hook. Keep or swap any of them before we edit.</p></div>
+      <div class="step"><span class="mono day">DAYS 3–8</span><h3>We edit</h3><p>Hook-first opening, tight pacing, reframing to 9:16, clean audio, burned-in captions.</p></div>
+      <div class="step"><span class="mono day">DAYS 8–10</span><h3>Review and deliver</h3><p>One consolidated round of changes, then final files in a shared folder, ready to post.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">03 · DEMO REEL</span><h2>Demo work, clearly labeled.</h2></div>
+    <div class="two" style="margin-bottom: 32px;">
+      <span></span>
+      <p>We're a new studio. Our first two demo clips are in production, cut from source material we own or are licensed to use. Until they're published, ask us and we'll walk you through how we'd cut your episode. Client work appears here only with written permission.</p>
+    </div>
+    <div class="demo-grid">
+      <article class="demo">
+        <div class="slot mono">DEMO 01<br>9:16</div>
+        <div>
+          <h3>The Shortform Brief: why most podcast clips die in two seconds</h3>
+          <dl class="mono">
+            <dt>SOURCE</dt><dd>Shortform Bureau original recording</dd>
+            <dt>RIGHTS</dt><dd>Brand-owned</dd>
+            <dt>SHOWS</dt><dd>Hook-first open, caption style</dd>
+          </dl>
+          <span class="status mono">IN PRODUCTION</span>
+        </div>
+      </article>
+      <article class="demo">
+        <div class="slot mono">DEMO 02<br>9:16</div>
+        <div>
+          <h3>Planetary Defenders: the day an asteroid got a "city killer" label</h3>
+          <dl class="mono">
+            <dt>SOURCE</dt><dd>NASA documentary, NASA Image and Video Library</dd>
+            <dt>RIGHTS</dt><dd>NASA media, used under NASA media guidelines. No NASA endorsement implied.</dd>
+            <dt>SHOWS</dt><dd>Multi-speaker interview cut</dd>
+          </dl>
+          <span class="status mono">IN PRODUCTION</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">04 · PRICING</span><h2>Start with a pilot.</h2></div>
+    <div class="pricing">
+      <div class="plan lead">
+        <span class="mono">PILOT · ONE TIME</span>
+        <div class="price">$500</div>
+        <ul>
+          <li>12 vertical 9:16 clips, 20–60 seconds each</li>
+          <li>Cut from 2 of your episodes</li>
+          <li>You approve the moment list before editing</li>
+          <li>Burned-in captions, on-screen hook, one post title per clip</li>
+          <li>1 round of revisions</li>
+          <li>Delivered in 10 business days</li>
+        </ul>
+        <a class="btn" href="#contact">Ask about the pilot</a>
+      </div>
+      <div class="plan">
+        <span class="mono">GROWTH · MONTHLY</span>
+        <div class="price">$1,500<small>/ month</small></div>
+        <ul>
+          <li>16–20 vertical clips per month</li>
+          <li>Weekly delivery from your new episodes</li>
+          <li>Moment list, captions, hooks and post titles</li>
+          <li>Month to month, 30 days' notice</li>
+        </ul>
+        <a class="btn ghost" href="#contact">Talk about Growth</a>
+      </div>
+    </div>
+    <div class="aside">
+      <span><strong>Paid sample: $75.</strong> One clip from an episode you choose, in 3 business days. Credited toward the pilot within 14 days.</span>
+      <span><strong>Moving to Growth</strong> within 30 days of a pilot? $250 of the pilot is credited.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">05 · FIT</span><h2>Who this is for.</h2></div>
+    <div class="fit">
+      <div class="stack">
+        <h3>A good fit</h3>
+        <ul>
+          <li>B2B, SaaS, startup, investing and business shows</li>
+          <li>Publishing on video at least twice a month</li>
+          <li>Strong long-form, with few clips or clips that aren't landing</li>
+          <li>Hosts or producers who want every clip approved before it ships</li>
+        </ul>
+      </div>
+      <div class="stack">
+        <h3>Not a fit</h3>
+        <ul>
+          <li>Audio-only shows</li>
+          <li>Anyone looking for guaranteed view counts</li>
+          <li>Mass reposting across networks of accounts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">06 · FAQ</span><h2>Questions.</h2></div>
+    <div>
+      <details><summary>Do you guarantee views?</summary><p>No. Reach depends on the platform, your account history and timing. We guarantee the work: 12 well-edited clips, on time.</p></details>
+      <details><summary>Who owns the clips?</summary><p>You do. They're cut from your content and delivered to you with full rights to use them anywhere.</p></details>
+      <details><summary>What do you need from us?</summary><p>Two episode links (YouTube or raw files) and your brand basics. Raw multi-camera files are welcome but not required.</p></details>
+      <details><summary>Do you post the clips for us?</summary><p>In the pilot, we deliver ready-to-post files and you post them on your own channels. Nothing is posted anywhere without your approval.</p></details>
+      <details><summary>Can we try one clip first?</summary><p>Yes, as a paid sample: one finished clip for $75, delivered in 3 business days and credited toward the pilot if you continue within 14 days. We don't do unpaid spec work.</p></details>
+      <details><summary>Which platforms?</summary><p>YouTube Shorts, Instagram Reels, TikTok and LinkedIn, from one 9:16 master per clip.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="sec-head"><span class="mono">07 · CONTACT</span><h2>Send us your show.</h2></div>
+    <div class="contact-grid">
+      <div class="stack">
+        <p>Tell us which show and which episodes you'd start with. We reply within one business day with a short plan and the moments we'd look at first.</p>
+        <div class="email-line"><a id="email-link" href="mailto:editflowglobal@gmail.com"><span id="email-text">editflowglobal@gmail.com</span></a></div>
+        <p class="mono">REMOTE · SERVING US, UK, CANADA AND EUROPE</p>
+      </div>
+      <form id="contact-form" novalidate>
+        <label for="f-name">Your name<input id="f-name" name="name" autocomplete="name" required></label>
+        <label for="f-show">Show or channel link<input id="f-show" name="show" inputmode="url" placeholder="https://youtube.com/@yourshow" required></label>
+        <label for="f-msg">Anything we should know<textarea id="f-msg" name="message" rows="4"></textarea></label>
+        <button class="btn" type="submit">Write the email</button>
+        <p class="form-note">This opens a pre-filled email in your mail app. Nothing is sent until you press send.</p>
+        <p class="form-out" id="form-out" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>© <span id="year">2026</span> Shortform Bureau</span>
+    <span>New studio, onboarding first clients.</span>
+  </footer>
+</div>
+
+<script>
+  /* Set the live inbox here before deploying. */
+  var CONTACT_EMAIL = "editflowglobal@gmail.com";
+
+  (function () {
+    var link = document.getElementById("email-link");
+    var text = document.getElementById("email-text");
+    link.href = "mailto:" + CONTACT_EMAIL;
+    text.textContent = CONTACT_EMAIL;
+    document.getElementById("year").textContent = String(new Date().getFullYear());
+
+    var form = document.getElementById("contact-form");
+    var out = document.getElementById("form-out");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = document.getElementById("f-name").value.trim();
+      var show = document.getElementById("f-show").value.trim();
+      var msg = document.getElementById("f-msg").value.trim();
+      if (!name || !show) {
+        out.textContent = "Add your name and a link to your show, then try again.";
+        return;
+      }
+      var subject = "Pilot enquiry: " + show;
+      var body = "Name: " + name + "\nShow: " + show + "\n\n" + (msg || "");
+      var href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      out.textContent = "Opening your mail app. If nothing opens, email " + CONTACT_EMAIL + " directly.";
+      window.location.href = href;
+    });
+  })();
+</script>
+</body>
+</html>
