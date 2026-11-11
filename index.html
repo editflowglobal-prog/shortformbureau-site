@@ -159,6 +159,9 @@ section { padding: clamp(56px, 8vw, 104px) 0; border-top: 1px solid var(--ink); 
 .demo dl { margin: 12px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; font-size: 15px; }
 .demo dt { color: var(--ink-soft); }
 .demo dd { margin: 0; }
+.demo.live { grid-column: 1 / -1; grid-template-columns: 300px minmax(0, 1fr); gap: 32px; }
+.demo video.slot { width: 100%; height: auto; padding: 0; border: 1px solid var(--ink); background: #141414; object-fit: cover; display: block; }
+.status.live { border-color: var(--ink); background: var(--ink); color: #F4F2EE; }
 .status { display: inline-block; margin-top: 4px; padding: 3px 8px; border: 1px solid var(--signal-deep); color: var(--signal-deep); }
 
 .pricing { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
@@ -224,6 +227,8 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; gap: 16
   .frame { padding: 8px; }
   .frame .cap { display: none; }
   .demo { grid-template-columns: 96px minmax(0, 1fr); }
+  .demo.live { grid-template-columns: 1fr; }
+  .demo.live video.slot { max-width: 320px; margin: 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tl-cut { animation: none; }
@@ -316,9 +321,21 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; gap: 16
     <div class="sec-head"><span class="mono">03 · DEMO REEL</span><h2>Demo work, clearly labeled.</h2></div>
     <div class="two" style="margin-bottom: 32px;">
       <span></span>
-      <p>We're a new studio. Our first two demo clips are in production, cut from source material we own or are licensed to use. Until they're published, ask us and we'll walk you through how we'd cut your episode. Client work appears here only with written permission.</p>
+      <p>We're a new studio. Demo 02 is live below, cut from a public NASA documentary under NASA media guidelines. Demo 01, cut from our own recording, is in production. Client work appears here only with written permission.</p>
     </div>
     <div class="demo-grid">
+      <article class="demo live">
+        <video class="slot" src="https://github.com/user-attachments/assets/17daa6f0-84f4-401b-a6fa-866e49ece210" poster="https://github.com/user-attachments/assets/c78d6d66-b96f-44e3-b269-0155ae322080" controls playsinline preload="none" aria-label="Demo 02: Planetary Defenders vertical clip, 47 seconds"></video>
+        <div>
+          <h3>Planetary Defenders: the day an asteroid got a "city killer" label</h3>
+          <dl class="mono">
+            <dt>SOURCE</dt><dd>NASA documentary, NASA Image and Video Library</dd>
+            <dt>RIGHTS</dt><dd>NASA media, used under NASA media guidelines. No NASA endorsement implied.</dd>
+            <dt>SHOWS</dt><dd>Five moments from a 20-minute film cut into one 47-second story: hook-first open, timed captions, data-scene typography, original illustration</dd>
+          </dl>
+          <span class="status live mono">LIVE · 0:47 · DEMO, NOT CLIENT WORK</span>
+        </div>
+      </article>
       <article class="demo">
         <div class="slot mono">DEMO 01<br>9:16</div>
         <div>
@@ -327,18 +344,6 @@ footer { padding: 28px 0; display: flex; justify-content: space-between; gap: 16
             <dt>SOURCE</dt><dd>Shortform Bureau original recording</dd>
             <dt>RIGHTS</dt><dd>Brand-owned</dd>
             <dt>SHOWS</dt><dd>Hook-first open, caption style</dd>
-          </dl>
-          <span class="status mono">IN PRODUCTION</span>
-        </div>
-      </article>
-      <article class="demo">
-        <div class="slot mono">DEMO 02<br>9:16</div>
-        <div>
-          <h3>Planetary Defenders: the day an asteroid got a "city killer" label</h3>
-          <dl class="mono">
-            <dt>SOURCE</dt><dd>NASA documentary, NASA Image and Video Library</dd>
-            <dt>RIGHTS</dt><dd>NASA media, used under NASA media guidelines. No NASA endorsement implied.</dd>
-            <dt>SHOWS</dt><dd>Multi-speaker interview cut</dd>
           </dl>
           <span class="status mono">IN PRODUCTION</span>
         </div>
